@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登陆</title>
+    <link rel="stylesheet" href="http://i.gtimg.cn/vipstyle/frozenui/2.0.0/css/frozen.css">
+    <style>
+            .bg-img{
+                top: 0;
+                left: 0;
+                min-width: 1000px;
+                z-index:-10;
+                zoom: 1;
+                background-color: #fff;
+                background-repeat: no-repeat;
+                background-size: cover;
+                -webkit-background-size: cover;
+                -o-background-size: cover;
+                background-position: center 0;
+                width: 100%;height:100%;position:fixed;"
+            }
+        .margin-center{
+            margin: 60% 8% 0 8%;
+        }
+    </style>
+</head>
+<body>
+    <img src="../img/login-backgroup.png"   class="bg-img">
+
+    <div class="ui-form ui-border-t margin-center" style="zoom:2;border-radius: 2%;">
+        <form action="">
+            <div class="ui-form-item ui-border-b">
+                <label>
+                    手机号码
+                </label>
+                <input type="text" placeholder="手机号码">
+                <a href="#" class="ui-icon-close">
+                </a>
+            </div>
+            <div class="ui-form-item ui-border-b">
+                <label>
+                    验证码
+                </label>
+                <input type="text" placeholder="验证码">
+                <a href="#" class="ui-icon-close">
+                </a>
+            </div>
+            <div class="ui-form-item">
+                <button class="ui-btn-lg-nowhole ui-btn-primary" style="margin-right: -1px;width: 120px" id="check_code" onclick="checkCodeClick()">获取验证码</button>
+            </div>
+            <div class="ui-btn-wrap">
+                <button class="ui-btn-lg ui-btn-primary">
+                    确定
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+
+</body>
+<script>
+    var flag = 0;
+    function checkCodeClick(){
+        if(flag==1){
+            return;
+        }
+        var c = 60;
+        document.getElementById("check_code").innerHTML = c+'s';
+        document.getElementById("check_code").className = 'ui-btn-lg-nowhole ui-btn-danger disabled';
+        flag = 1;
+        var t2 = window.setInterval(function() {
+            c--;
+            document.getElementById("check_code").innerHTML = c+'s';
+            if(c==0){
+                document.getElementById("check_code").className = 'ui-btn-lg-nowhole ui-btn-primary';
+                document.getElementById("check_code").innerHTML = '获取验证码';
+                flag = 0;
+
+                window.clearInterval(t2)  // 去除定时器
+
+            }
+
+        },1000)
+
+
+
+    }
+</script>
+</html>

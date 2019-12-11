@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenaibao.manage.product.dao.product.ProductApiMapper" >
+    <resultMap id="baseMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="pro_name" property="productName" jdbcType="VARCHAR" />
+        <result column="pro_content" property="productContent" jdbcType="VARCHAR" />
+        <result column="pro_topPic" property="topPic" jdbcType="VARCHAR" />
+        <result column="pro_clauseFileUrls" property="clauseFileUrls" jdbcType="VARCHAR" />
+        <result column="pro_productPreUrl" property="productPreUrl" jdbcType="VARCHAR" />
+
+        <result column="pro_topPic_fileName" property="proTopPicFileName" jdbcType="VARCHAR" />
+        <result column="pro_clauseFileUrls_fileNames" property="proClauseFileUrlsFileNames" jdbcType="VARCHAR" />
+        <result column="pro_productPreUrl_fileName" property="proProductPreUrlFileName" jdbcType="VARCHAR" />
+        <result column="pro_price" property="proPrice" jdbcType="FLOAT" />
+        <result column="pro_type" property="productType" jdbcType="INTEGER" />
+        <result column="pro_support" property="proSupportStr" jdbcType="VARCHAR" />
+        <result column="pro_softWords" property="proSoftWords" jdbcType="VARCHAR" />
+
+        <result column="pro_softWords_fileUrls" property="proSoftWordsFileUrls" jdbcType="VARCHAR" />
+
+    </resultMap>
+
+    <resultMap id="qaMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <!--<collection property="qaId" ofType="INTEGER" javaType="list">-->
+            <!--<result column="qa_id"/>-->
+        <!--</collection>-->
+
+        <collection property="Q" ofType="string" javaType="list">
+            <result column="question_content" />
+        </collection>
+        <collection property="A" ofType="string" javaType="list">
+            <result column="answer_content" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="knowMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <!--<collection property="proKnowId" ofType="INTEGER" javaType="list">-->
+            <!--<result column="pro_know_id"/>-->
+        <!--</collection>-->
+        <collection property="productKnowLeft" ofType="string" javaType="list">
+            <result column="pro_knowLeft" />
+        </collection>
+
+        <collection property="productKnowRight" ofType="string" javaType="list">
+            <result column="pro_knowRight" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="planMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <!--<collection property="proPlanId" ofType="INTEGER" javaType="list">-->
+            <!--<result column="pro_plan_id"/>-->
+        <!--</collection>-->
+        <collection property="productPlanShowLeft" ofType="string" javaType="list">
+            <result column="pro_planShowLeft" />
+        </collection>
+
+        <collection property="productPlanShowRight" ofType="string" javaType="list">
+            <result column="pro_planShowRight" />
+        </collection>
+    </resultMap>
+
+    <!-- 产品种类Map -->
+    <resultMap id="proTypeMap" type="com.shenaibao.manage.product.model.product.ProductType" >
+        <id column="pro_type_id" property="proTypeId" jdbcType="INTEGER" />
+        <result column="pro_type_name"  property="proTypeName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- 产品支持Map -->
+    <resultMap id="proSupportMap" type="com.shenaibao.manage.product.model.product.ProductSupport" >
+        <id column="pro_support_id" property="proSupportId" jdbcType="INTEGER" />
+        <result column="pro_support_name"  property="proSupportName" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <!-- 产品种类Map -->
+    <resultMap id="proBaseAndType" type="com.shenaibao.manage.product.model.product.Product" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="pro_name" property="productName" jdbcType="VARCHAR" />
+        <result column="pro_content" property="productContent" jdbcType="VARCHAR" />
+        <result column="pro_price" property="proPrice" jdbcType="FLOAT" />
+        <result column="pro_type" property="productType" jdbcType="INTEGER" />
+        <result column="pro_type_name" property="productTypeStr" jdbcType="INTEGER" />
+    </resultMap>
+
+    <select id="selectProductListByTypeId" resultMap="baseMap">
+        SELECT pro_name,pro_content,pro_price from a_product WHERE pro_type=#{proTypeId}
+    </select>
+
+    <select id="selectProductPicById" resultMap="baseMap">
+        SELECT pro_topPic from a_product WHERE id=#{proId}
+    </select>
+
+
+    <select id="selectProductNameById" resultMap="baseMap">
+        SELECT pro_name from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectProductPriceById" resultMap="baseMap">
+        SELECT pro_price from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectContentById" resultMap="baseMap">
+        SELECT pro_content from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectProductTypeById" resultMap="proTypeMap">
+        SELECT type.pro_type_name from a_pro_type type,a_product pro WHERE pro.pro_type=type.pro_type_id
+        AND pro.id = #{proId}
+    </select>
+
+    <select id="selectProductSupportStrById" resultMap="baseMap">
+        SELECT pro_support from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectProductSupportsBySupId" resultMap="proSupportMap">
+        SELECT pro_support_name from a_pro_support WHERE pro_support_id=#{supId}
+    </select>
+
+    <select id="selectProductPlanMessagesById" resultMap="planMap">
+        SELECT pro_planShowLeft,pro_planShowRight from a_pro_planmessage WHERE pro_id=#{proId}
+    </select>
+
+    <select id="selectProductKnowMessagesById" resultMap="knowMap">
+        SELECT pro_knowLeft,pro_knowRight from a_pro_knowmessage WHERE pro_id=#{proId}
+    </select>
+
+    <select id="selectProductPreById" resultMap="baseMap">
+        SELECT pro_productPreUrl from a_product WHERE id=#{proId}
+    </select>
+
+
+    <select id="selectClausesPreStrById" resultMap="baseMap">
+        SELECT pro_clauseFileUrls,pro_clauseFileUrls_fileNames from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectQAById" resultMap="qaMap">
+        SELECT question_content,answer_content from a_pro_qa WHERE pro_id=#{proId}
+    </select>
+
+    <select id="getAllType" resultMap="proTypeMap">
+        SELECT * from a_pro_type
+    </select>
+    <!--第二套接口-->
+
+    <select id="getProductListOrderByProType" resultMap="proBaseAndType">
+        SELECT id,pro_name,pro_content,pro_price,pro_type,pro_type_name from a_product,a_pro_type WHERE pro_type=pro_type_id ORDER BY pro_type
+    </select>
+
+
+
+    <select id="getProductDataBase" resultMap="baseMap">
+    SELECT id,pro_topPic,pro_name,pro_productPreUrl,pro_price,pro_clauseFileUrls,pro_clauseFileUrls_fileNames,pro_support from a_product WHERE id= #{proId}
+    </select>
+
+    <select id="getSoftWordsByProId" resultMap="baseMap">
+        SELECT pro_softWords from a_product WHERE id=#{proId}
+    </select>
+</mapper>

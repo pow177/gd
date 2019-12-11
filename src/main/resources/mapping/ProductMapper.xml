@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shenaibao.manage.product.dao.product.ProductMapper" >
+    <resultMap id="baseMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="pro_name" property="productName" jdbcType="VARCHAR" />
+        <result column="pro_content" property="productContent" jdbcType="VARCHAR" />
+        <result column="pro_topPic" property="topPic" jdbcType="VARCHAR" />
+        <result column="pro_clauseFileUrls" property="clauseFileUrls" jdbcType="VARCHAR" />
+        <result column="pro_productPreUrl" property="productPreUrl" jdbcType="VARCHAR" />
+        <result column="pro_topPic_fileName" property="proTopPicFileName" jdbcType="VARCHAR" />
+        <result column="pro_clauseFileUrls_fileNames" property="proClauseFileUrlsFileNames" jdbcType="VARCHAR" />
+        <result column="pro_productPreUrl_fileName" property="proProductPreUrlFileName" jdbcType="VARCHAR" />
+        <result column="pro_price" property="proPrice" jdbcType="FLOAT" />
+        <result column="pro_type" property="productType" jdbcType="INTEGER" />
+        <result column="pro_support" property="proSupportStr" jdbcType="VARCHAR" />
+        <result column="pro_softWords" property="proSoftWords" jdbcType="VARCHAR" />
+        <result column="pro_softWords_fileUrls" property="proSoftWordsFileUrls" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="qaMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <collection property="qaId" ofType="INTEGER" javaType="list">
+            <result column="qa_id"/>
+        </collection>
+
+        <collection property="Q" ofType="string" javaType="list">
+            <result column="question_content" />
+        </collection>
+        <collection property="A" ofType="string" javaType="list">
+            <result column="answer_content" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="knowMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <collection property="proKnowId" ofType="INTEGER" javaType="list">
+            <result column="pro_know_id"/>
+        </collection>
+        <collection property="productKnowLeft" ofType="string" javaType="list">
+            <result column="pro_knowLeft" />
+        </collection>
+
+        <collection property="productKnowRight" ofType="string" javaType="list">
+            <result column="pro_knowRight" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="planMap" type="com.shenaibao.manage.product.model.product.Product" >
+        <collection property="proPlanId" ofType="INTEGER" javaType="list">
+            <result column="pro_plan_id"/>
+        </collection>
+        <collection property="productPlanShowLeft" ofType="string" javaType="list">
+        <result column="pro_planShowLeft" />
+    </collection>
+
+    <collection property="productPlanShowRight" ofType="string" javaType="list">
+        <result column="pro_planShowRight" />
+    </collection>
+    </resultMap>
+
+    <!-- 产品种类Map -->
+    <resultMap id="proTypeMap" type="com.shenaibao.manage.product.model.product.ProductType" >
+        <id column="pro_type_id" property="proTypeId" jdbcType="INTEGER" />
+        <result column="pro_type_name"  property="proTypeName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- 产品支持Map -->
+    <resultMap id="proSupportMap" type="com.shenaibao.manage.product.model.product.ProductSupport" >
+        <id column="pro_support_id" property="proSupportId" jdbcType="INTEGER" />
+        <result column="pro_support_name"  property="proSupportName" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <insert id="insertEasyMessageAndGetProKey" parameterType="com.shenaibao.manage.product.model.product.Product">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            select @@IDENTITY as id
+        </selectKey>
+        INSERT INTO a_product(pro_name,pro_content,pro_topPic,pro_clauseFileUrls,pro_productPreUrl,pro_topPic_fileName,pro_clauseFileUrls_fileNames,pro_productPreUrl_fileName,pro_price,pro_type,pro_support,pro_softWords,pro_softWords_fileUrls)
+        VALUE (#{productName},#{productContent},#{topPic},#{clauseFileUrls},#{productPreUrl},#{proTopPicFileName},#{proClauseFileUrlsFileNames},#{proProductPreUrlFileName},#{proPrice},#{productType},#{proSupportStr},#{proSoftWords},#{proSoftWordsFileUrls})
+    </insert>
+
+    <insert id="insertQuestionAndQuestion" parameterType="String">
+        INSERT INTO a_pro_qa(pro_id,question_content,answer_content) VALUE (#{proId},#{questionContent},#{answerContent})
+    </insert>
+
+
+    <insert id="insertProductKnow" parameterType="String">
+        INSERT INTO a_pro_knowmessage(pro_knowLeft,pro_knowRight,pro_id) VALUE (#{productKnowLeft},#{productKnowRight},#{answerContent})
+    </insert>
+
+    <insert id="insertProductPlan" parameterType="String">
+        INSERT INTO a_pro_planmessage(pro_planShowLeft,pro_planShowRight,pro_id) VALUE (#{proPlanShowLeft},#{proPlanShowRight},#{proId})
+    </insert>
+
+    <select id="getProductDataListBySearch" parameterType="String" resultMap="baseMap">
+        SELECT id,pro_price,pro_name,pro_topPic from a_product <if test="!('').equals(search)">WHERE pro_name like CONCAT(#{search}, '%') or pro_price like CONCAT(#{search}, '%')</if>
+    </select>
+    <select id="getProductsCounts"  resultType="int">
+        SELECT count(*) from a_product
+    </select>
+
+    <select id="getDelFilesUrl" parameterType="int"  resultType="int">
+        SELECT pro_topPic,pro_clauseFileUrls_fileNames,pro_productPreUrl_fileName from a_product where id=#{delProId}
+    </select>
+
+    <delete id="delProductBaseDataByProId" parameterType="int" >
+        DELETE pro.* from a_product pro WHERE pro.id=#{delProId}
+    </delete>
+
+    <delete id="delProductQAByProId" parameterType="int" >
+        DELETE qa.* from a_pro_qa qa WHERE qa.pro_id=#{delProId}
+    </delete>
+
+    <delete id="delProductKMByProId" parameterType="int" >
+        DELETE km.* from a_pro_knowmessage km WHERE km.pro_id=#{delProId}
+    </delete>
+
+    <delete id="delProductPMByProId" parameterType="int" >
+        DELETE pm.* from a_pro_planmessage pm WHERE pm.pro_id=#{delProId}
+
+    </delete>
+    <select id="selectProductDataBase" parameterType="int"  resultMap="baseMap">
+      SELECT * from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectProductDataQA" parameterType="int"  resultMap="qaMap">
+        SELECT * from a_pro_qa WHERE pro_id=#{proId}
+    </select>
+
+    <select id="selectProductDataKnowMessage" parameterType="int"  resultMap="knowMap">
+        SELECT * from a_pro_knowmessage WHERE pro_id=#{proId}
+    </select>
+
+    <select id="selectProductDataPlanMessage" parameterType="int"  resultMap="planMap">
+        SELECT * from a_pro_planmessage WHERE pro_id=#{proId}
+    </select>
+
+
+
+
+
+
+    <select id="selectTopPicData" parameterType="int"  resultMap="baseMap">
+        SELECT pro_topPic,pro_topPic_fileName from a_product WHERE id=#{proId}
+    </select>
+
+    <select id="selectPreData" parameterType="int"  resultMap="baseMap">
+        SELECT pro_productPreUrl,pro_productPreUrl_fileName from a_product WHERE id=#{proId}
+    </select>
+
+
+    <select id="selectClauseData" parameterType="int"  resultMap="baseMap">
+        SELECT pro_clauseFileUrls,pro_clauseFileUrls_fileNames from a_product WHERE id=#{proId}
+    </select>
+
+    <update id="updateTopPicData" >
+    UPDATE a_product set pro_topPic=#{topPic},pro_topPic_fileName=#{topPicFileName} WHERE id=#{proId}
+    </update>
+
+
+    <update id="updatePreData">
+        UPDATE a_product set pro_productPreUrl=#{preUrl},pro_productPreUrl_fileName=#{preFileName} WHERE id=#{proId}
+    </update>
+
+    <update id="updateClauseData" >
+        UPDATE a_product set pro_clauseFileUrls=#{clauseUrl},pro_clauseFileUrls_fileNames=#{clauseFileName} WHERE id=#{proId}
+    </update>
+
+    <update id="updateProductDataOfWords" >
+        UPDATE a_product set pro_name = #{proName},pro_content = #{proContent},pro_type = #{proType},pro_price = #{proPrice},pro_support=#{proSupport},pro_softWords=#{proSoftWords},pro_softWords_fileUrls=#{proSoftWordsFileUrls} WHERE id=#{proId}
+    </update>
+
+    <update id="updateProductOfKnowDataOfWords" >
+        UPDATE a_pro_knowmessage set pro_knowLeft = #{knowLeft},pro_knowRight=#{knowRight} WHERE pro_know_id=#{proId}
+    </update>
+
+    <update id="updateProductOfPlanShowDataOfWords" >
+        UPDATE a_pro_planmessage set pro_planShowLeft = #{planLeft},pro_planShowRight=#{planRight} WHERE pro_plan_id=#{proId}
+    </update>
+
+    <update id="updateProductOfQADataOfWords">
+        UPDATE a_pro_qa set question_content = #{qContent},answer_content=#{aContent} WHERE qa_id=#{proId}
+    </update>
+
+    <insert id="insertProductOfKnowDataOfWords">
+        insert into a_pro_knowmessage (pro_knowLeft,pro_knowRight,pro_id) values (#{knowLeft},#{knowRight},#{proId})
+    </insert>
+
+    <insert id="insertProductOfPlanShowDataOfWords">
+    insert into a_pro_planmessage (pro_planShowLeft,pro_planShowRight,pro_id) values (#{planLeft},#{planRight},#{proId})
+</insert>
+
+    <insert id="insertProductOfQADataOfWords">
+        insert into a_pro_qa (question_content,answer_content,pro_id) values (#{qContent},#{aContent},#{proId})
+    </insert>
+
+    <!--delProductOfKnowDataOfWords-->
+    <!--delProductOfPlanShowDataOfWords-->
+    <!--delProductOfQADataOfWords-->
+
+    <delete id="delProductOfKnowDataOfWords">
+        delete  from a_pro_knowmessage WHERE pro_id=#{proId}
+    </delete>
+
+    <delete id="delProductOfPlanShowDataOfWords">
+        delete  from a_pro_planmessage WHERE pro_id=#{proId}
+    </delete>
+
+    <delete id="delProductOfQADataOfWords">
+        delete  from a_pro_qa WHERE pro_id=#{proId}
+    </delete>
+
+    <delete id="delProductOfKnowDataOfWordsByKnowId">
+        delete  from a_pro_knowmessage WHERE pro_know_id=#{knowId}
+    </delete>
+
+    <delete id="delProductOfPlanShowDataOfWordsByPlanId">
+        delete  from a_pro_planmessage WHERE pro_plan_id=#{planId}
+    </delete>
+
+    <delete id="delProductOfQADataOfWordsByQaId">
+        delete  from a_pro_qa WHERE qa_id=#{qaId}
+    </delete>
+
+    <!--产品种类的操作 -->
+    <insert id="insertProductType">
+        insert into a_pro_type set pro_type_name =#{proTypeName}
+    </insert>
+
+    <delete id="delProducTypeById">
+        DELETE from a_pro_type WHERE pro_type_id = #{typeId}
+    </delete>
+<select id="getProductTypeDataListBySearch" resultMap="proTypeMap">
+    SELECT pro_type_name,pro_type_id from a_pro_type <if test="!('').equals(search)">WHERE pro_type_name like CONCAT(#{search}, '%')</if>
+</select>
+    <select id="getProductTypeDataAll" resultMap="proTypeMap">
+        SELECT * from a_pro_type
+    </select>
+    <select id="getProductTypeCounts" resultType="int">
+        SELECT count(*) from a_pro_type
+    </select>
+
+    <update id="updateProductType">
+        UPDATE a_pro_type set pro_type_name = #{proTypeName} WHERE pro_type_id=#{typeId}
+    </update>
+
+    <!--产品支持 -->
+    <insert id="insertProductSupport">
+        insert into  a_pro_support set pro_support_name = #{proSupName}
+    </insert>
+
+    <select id="getProductSupportDataListBySearch" resultMap="proSupportMap">
+        SELECT * from a_pro_support <if test="!('').equals(search)">WHERE pro_support_name like CONCAT(#{search}, '%')</if>
+    </select>
+
+    <update id="updateProductSupportById">
+      UPDATE a_pro_support set pro_support_name = #{proSupName} WHERE pro_support_id=#{proSupId}
+    </update>
+
+    <select id="getProductSupportDataAll" resultMap="proSupportMap">
+        SELECT * from a_pro_support
+    </select>
+
+    <delete id="delProductSupportById">
+        delete  from a_pro_support WHERE pro_support_id=#{proSupId}
+    </delete>
+
+
+    <select id="getProductSupportCounts" resultType="int">
+        SELECT count(*) from a_pro_support
+    </select>
+
+    <!-- 删除产品支持无用的支持部分 -->
+    <select id="getAllProductSupprtId" resultType="int">
+        SELECT pro_support_id from a_pro_support
+    </select>
+
+    <select id="getProductSupStr" resultType="String">
+        SELECT pro_support from a_product WHERE id = #{proId}
+    </select>
+
+    <update id="updateProSup">
+       UPDATE a_product set pro_support = #{proSupport} WHERE id=#{proId}
+    </update>
+
+</mapper>

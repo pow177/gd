@@ -1,0 +1,28 @@
+[
+ {
+		"title": "信息管理",
+		"icon": "&#x1002;",
+		"spread": false,
+		"children": [
+			{
+				"title": "商品信息管理",
+				"icon": "fa-check-square-o",
+				"href": "#"
+			},
+			{
+				"title": "订单管理",
+				"icon": "fa-check-square-o",
+				"href": "#"
+			},
+			{
+				"title": "权限管理",
+				"icon": "fa-check-square-o",
+				"href": "#"
+			},{
+				"title": "用户管理",
+				"icon": "fa-check-square-o",
+				"href": "http://www.baidu.com"
+			}
+		]
+	}
+ ]

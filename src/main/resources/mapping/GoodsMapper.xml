@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gd.client.dao.GoodsMapper" >
+    <resultMap id="baseMap" type="com.gd.client.bean.Good" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="good_name" property="goodName" jdbcType="VARCHAR" />
+        <result column="good_unit" property="goodUnit" jdbcType="VARCHAR" />
+        <result column="good_price" property="goodPrice" jdbcType="VARCHAR" />
+        <result column="good_part_flag" property="goodPartFlag" jdbcType="INTEGER" />
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+        <result column="good_sale_times" property="goodSaleTimes" jdbcType="INTEGER" />
+    </resultMap>
+
+
+
+
+   <insert id="insertGoodInfo">
+       insert into good set good_name=#{goodName},good_unit=#{goodUnit},good_price=#{goodPrice},good_part_flag=#{goodPartFlag},img_url=#{imgUrl}
+   </insert>
+
+    <delete id="deleteGoodById">
+        delete from good where id=#{id}
+    </delete>
+
+    <select id="getGoodInfoBySearch" parameterType="String" resultMap="baseMap">
+        SELECT * from good
+        <if test="!('').equals(search)">WHERE pro_name like CONCAT(#{search}, '%') or pro_price like CONCAT(#{search}, '%')</if>
+    </select>
+
+    <select id="getGoodsCounts" resultType="int">
+        select count(*) from good
+    </select>
+</mapper>

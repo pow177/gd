@@ -1,0 +1,28 @@
+[
+ {
+		"title": "产品管理",
+		"icon": "&#x1002;",
+		"spread": false,
+		"children": [
+			{
+				"title": "产品详情展示",
+				"icon": "fa-check-square-o",
+				"href": "/product/productManageShow"
+			},
+			{
+				"title": "产品详情录入",
+				"icon": "fa-check-square-o",
+				"href": "/product/productManageAdd"
+			},
+			{
+				"title": "产品种类管理",
+				"icon": "fa-check-square-o",
+				"href": "/product/productManageTypeShow"
+			},{
+				"title": "产品支持管理",
+				"icon": "fa-check-square-o",
+				"href": "/product/productManageSupportShow"
+			}
+		]
+	}
+ ]

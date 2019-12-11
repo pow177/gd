@@ -1,0 +1,103 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <!--
+        DefaultAnnotationHandlerMapping -> org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
+        AnnotationMethodHandlerAdapter -> org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+        AnnotationMethodHandlerExceptionResolver -> ExceptionHandlerExceptionResolver
+        以上都在使用了annotation-driven后自动注册。
+     -->
+    <mvc:annotation-driven/>
+
+    <mvc:default-servlet-handler/>
+
+    <context:component-scan base-package="com.shenaibao.manage.product.controller"/>
+    <!--<mvc:resources location="/" mapping="/**/*.html"/>或者<mvc:default-servlet-handler />-->
+    <!--只拦截*.action,所以不会拦截到静态文件所以不配静态资源解析 -->
+
+    <!-- 视图解析器解析jsp解析，默认使用jstl标签，classpath下的得有jstl的包 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 配置jsp路径的前缀 -->
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <!-- 配置jsp路径的后缀 -->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 扫描静态资源文件 -->
+    <!--<mvc:resources location="/WEB-INF/view/images/" mapping="/images/**"/>-->
+
+    <!-- 拦截器 -->
+    <!--<mvc:interceptors>-->
+    <!--<mvc:interceptor>-->
+    <!--<mvc:mapping path="/admin-module/*"/>-->
+    <!--<mvc:exclude-mapping path="/admin-module/adminLogin"/>-->
+    <!--<bean class="Interceptors.AdminInterceptor"></bean>-->
+    <!--</mvc:interceptor>-->
+    <!--<mvc:interceptor>-->
+    <!--<mvc:mapping path="/bbs-module/*"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/article-list"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/index"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/search"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/addClickTime"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/articlePage"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/searchPage"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/postSpecific"/>-->
+    <!--<mvc:exclude-mapping path="/bbs-module/search.jsp"/>-->
+    <!--<bean class="Interceptors.BBSInterceptor"/>-->
+    <!--</mvc:interceptor>-->
+    <!--<mvc:interceptor>-->
+    <!--<mvc:mapping path="/login-module/*"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/login-page"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/registered"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/forgot-password"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/checkPhone"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/validatePhone"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/checkUsernameIsExist"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/addNewPassword"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/registerUser"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/checkUserIsExist"/>-->
+    <!--<mvc:exclude-mapping path="/login-module/loginning"/>-->
+    <!--<bean class="Interceptors.LoginInterceptor"/>-->
+    <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list >
+                <ref bean="mappingJacksonHttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+
+    <!--避免IE执行AJAX时，返回JSON出现下载文件 -->
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/html;charset=UTF-8</value>
+                <value>multipart/form-data</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/> <!-- JSON转换器 -->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize">
+            <value>5242880</value>
+        </property>
+    </bean>
+</beans>
